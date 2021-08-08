@@ -42,20 +42,11 @@ class Core(commands.Cog):
         e.set_image(url=self.embed["banner"])
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
 
-        components = [
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.grey, "Invite", None, "invite"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, "Support", None, None, "https://discord.gg/bacZt25ZGZ")
-            )
-        ]
-        info = await ctx.send(embed=e, components=components)
+        await ctx.send(embed=e)
 
         if luckyint == 8:
             await ctx.author.send("Hey!")
             await ctx.author.send("You should try running `bab bab`!")
-
-        waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, info, "invite")
-        await waitfor.send("**Coming soon...**", hidden=True)
 
     @commands.command(name="info")
     async def dpyinfo(self, ctx: commands.Context):

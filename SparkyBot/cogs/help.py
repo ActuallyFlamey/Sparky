@@ -81,20 +81,21 @@ class Help(commands.Cog):
         corec = ""
         helpc = ""
 
-        for key, value in self.bot.slash.commands:
-            description = value["description"].split(" - ")
+        for value in self.bot.slash.commands:
+            name = value[0]
+            description = value[1].split(" - ")
             
             if description[0] == "Core":
-                corec += f"`{key}` - `{description[1]}\n\n"
+                corec += f"`{name}` - `{description[1]}\n\n"
             elif description[0] == "Help":
-                helpc += f"`{key}` - `{description[1]}\n\n"
+                helpc += f"`{name}` - `{description[1]}\n\n"
         corec = corec.rstrip()
         helpc += helpc.rstrip()
 
         e = discord.Embed(title="Sparky's Slash Commands", color=int(self.embed["color"], 16), description="The following is a list of Slash Commands for Sparky.")
         e.set_author(name=self.embed["author"], icon_url=self.embed["icon"])
-        e.add_field(name="Core", value=corec, inline=False)
-        e.add_field(name="Help", value=helpc, inline=False)
+        e.add_field(name="Core", value=f"{corec}", inline=False)
+        e.add_field(name="Help", value=f"{helpc}", inline=False)
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
         await ctx.send(embed=e)
 
