@@ -22,8 +22,8 @@ class Fun(commands.Cog):
             async with aiohttp.ClientSession(headers={"x-api-key": self.api["thecatapi"]}) as session:
                 async with session.get("https://api.thecatapi.com/v1/images/search") as response:
                     cat = await response.json()
-                    pic = cat["url"]
-                    catid = cat["id"]
+                    pic = cat[0]["url"]
+                    catid = cat[0]["id"]
             return [pic, catid]
         
         async def votecat(catid: str, vote: int):
@@ -81,8 +81,8 @@ class Fun(commands.Cog):
             async with aiohttp.ClientSession(headers={"x-api-key": self.api["thedogapi"]}) as session:
                 async with session.get("https://api.thedogapi.com/v1/images/search") as response:
                     dog = await response.json()
-                    pic = dog["url"]
-                    dogid = dog["id"]
+                    pic = dog[0]["url"]
+                    dogid = dog[0]["id"]
             return [pic, dogid]
         
         async def votedog(dogid: str, vote: int):
@@ -140,7 +140,7 @@ class Fun(commands.Cog):
             async with aiohttp.ClientSession() as session:
                 async with session.get("https://some-random-api.ml/animal/birb") as response:
                     bird = await response.json()
-                    pic = bird["image"]
+                    pic = bird[0]["image"]
             return pic
         
         bird = await getbird()
