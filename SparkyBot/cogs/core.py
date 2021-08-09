@@ -54,8 +54,8 @@ class Core(commands.Cog):
 
         await self.info(ctx)
     
-    @cog_ext.cog_slash(name="info", description="Core - Shows information about Sparky.")
-    async def slashinfo(self, ctx: interactions.SlashContext):
+    @cog_ext.cog_subcommand(base="info", name="bot", description="Core - Shows information about Sparky.")
+    async def slashinfobot(self, ctx: interactions.SlashContext):
         await self.info(ctx)
     
     @commands.command(name="parky", hidden=True)
