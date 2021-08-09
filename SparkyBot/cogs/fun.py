@@ -41,7 +41,7 @@ class Fun(commands.Cog):
             waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, catmsg, ["anothercat", "upvotecat", "downvotecat"])
             if waitfor.author.id == ctx.author.id:
                 cat = await getcat()
-                e.image = cat
+                e.set_image(url=cat)
                 await waitfor.edit_origin(embed=e)
             else:
                 await waitfor.send("Only the original author can request another cat!", hidden=True)
@@ -80,8 +80,8 @@ class Fun(commands.Cog):
         while True:
             waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, dogmsg, ["anotherdog", "upvotedog", "downvotedog"])
             if waitfor.author.id == ctx.author.id:
-                cat = await getcat()
-                e.image = cat
+                dog = await getdog()
+                e.set_image(url=dog)
                 await waitfor.edit_origin(embed=e)
             else:
                 await waitfor.send("Only the original author can request another dog!", hidden=True)
@@ -127,8 +127,8 @@ class Fun(commands.Cog):
         while True:
             waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, birdmsg, ["anotherbird"])
             if waitfor.author.id == ctx.author.id:
-                cat = await getcat()
-                e.image = cat
+                bird = await getbird()
+                e.set_image(url=bird)
                 await waitfor.edit_origin(embed=e)
             else:
                 await waitfor.send("Only the original author can request another bird!", hidden=True)
