@@ -8,7 +8,7 @@ from discord_slash import cog_ext
 from discord.ext import commands, tasks
 
 class Core(commands.Cog):
-    """Core Commands for Sparky."""
+    """Core Commands for Sparky!"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -38,7 +38,7 @@ class Core(commands.Cog):
         e.set_author(name=self.embed["author"] + "Core", icon_url=self.embed["icon"])
         e.set_thumbnail(url=self.embed["icon"])
         e.add_field(name="Developers", value="<@450678229192278036>: All commands and their Slash equivalents.\n<@598325949808771083>: `s!help`.\nOther: `s!jishaku` (External Extension).", inline=False)
-        e.add_field(name="Versions", value=f"Sparky: v0.0.1\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
+        e.add_field(name="Versions", value=f"Sparky: v0.0.2\nPython: v{platform.python_version()}\ndiscord.py: v{discord.__version__}", inline=False)
         e.set_image(url=self.embed["banner"])
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
 
@@ -62,7 +62,7 @@ class Core(commands.Cog):
     async def sparky(self, ctx: commands.Context):
         """???"""
 
-        await ctx.send("Hi, I'm Sparky the Shopkeeper! I am a bird, and because of that, there's an Easter *Egg*!\nYes, **Flamey#0075** does really bad jokes.")
+        await ctx.send("Hi, I'm **Sparky the Shopkeeper**! I am a bird, and because of that, there's an Easter *Egg*!\nYes, **Flamey#0075** does really bad jokes.")
 
 def setup(bot: commands.Bot):
     bot.add_cog(Core(bot))

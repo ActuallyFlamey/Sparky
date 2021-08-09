@@ -11,7 +11,7 @@ class HelpCommand(commands.MinimalHelpCommand):
             self.embed = json.load(embedfile)
 
     def get_command_signature(self, command):
-        return '{0.clean_prefix}{1.qualified_name} {1.signature}'.format(self, command).rstrip(" ")
+        return '{0.clean_prefix}{1.qualified_name} {1.signature}'.format(self.context, command).rstrip(" ")
 
     def command_formatter(self, embed, command):
         embed.title = f"{self.get_command_signature(command)} (from {command.cog_name})"
@@ -64,40 +64,15 @@ class HelpCommand(commands.MinimalHelpCommand):
         await self.context.send(embed=embed)
 
 class Help(commands.Cog):
-    """The Bot's `help` Command."""
+    """Sparky's `help` Command!"""
     def __init__(self, bot):
         self.bot = bot
         self.old_help_command = bot.help_command
         bot.help_command = HelpCommand()
         bot.help_command.cog = self
-        with open("./Sparky/SparkyBot/misc/assets/embed.json") as embedfile:
-            self.embed = json.load(embedfile)
 
     def cog_unload(self):
         self.bot.help_command = self.old_help_command
-    
-    @cog_ext.cog_slash(name="help", description="Help - Get help about all Commands.")
-    async def slashhelp(self, ctx: interactions.SlashContext):
-        corec = ""
-        helpc = ""
-
-        for value in self.bot.slash.commands:
-            name = value[0]
-            description = value[1].split(" - ")
-            
-            if description[0] == "Core":
-                corec += f"`{name}` - `{description[1]}\n\n"
-            elif description[0] == "Help":
-                helpc += f"`{name}` - `{description[1]}\n\n"
-        corec = corec.rstrip()
-        helpc += helpc.rstrip()
-
-        e = discord.Embed(title="Sparky's Slash Commands", color=int(self.embed["color"], 16), description="The following is a list of Slash Commands for Sparky.")
-        e.set_author(name=self.embed["author"], icon_url=self.embed["icon"])
-        e.add_field(name="Core", value=f"{corec}", inline=False)
-        e.add_field(name="Help", value=f"{helpc}", inline=False)
-        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
-        await ctx.send(embed=e)
 
 def setup(bot):
     bot.add_cog(Help(bot))
