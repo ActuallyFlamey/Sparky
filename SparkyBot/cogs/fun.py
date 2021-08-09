@@ -51,17 +51,17 @@ class Fun(commands.Cog):
 
         while True:
             waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, catmsg, ["anothercat", "upvotecat", "downvotecat"])
-            if waitfor.custom_id == "another":
+            if waitfor.custom_id == "anothercat":
                 if waitfor.author.id == ctx.author.id:
                     cat = await getcat()
                     waitfor.origin_message.embeds[0].image = cat[0]
                     await waitfor.edit_origin(embed=e)
                 else:
                     await waitfor.send("Only the original author can request another cat!", hidden=True)
-            elif waitfor.custom_id == "upvote":
+            elif waitfor.custom_id == "upvotecat":
                 await votecat(cat[1], 1)
                 await waitfor.send("Image upvoted!", hidden=True)
-            elif waitfor.custom_id == "downvote":
+            elif waitfor.custom_id == "downvotecat":
                 await votecat(cat[1], 0)
                 await waitfor.send("Image downvoted.", hidden=True)
     
@@ -110,17 +110,17 @@ class Fun(commands.Cog):
 
         while True:
             waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, dogmsg, ["anotherdog", "upvotedog", "downvotedog"])
-            if waitfor.custom_id == "another":
+            if waitfor.custom_id == "anotherdog":
                 if waitfor.author.id == ctx.author.id:
                     dog = await getdog()
                     waitfor.origin_message.embeds[0].image = dog[0]
                     await waitfor.edit_origin(embed=e)
                 else:
                     await waitfor.send("Only the original author can request another dog!", hidden=True)
-            elif waitfor.custom_id == "upvote":
+            elif waitfor.custom_id == "upvotedog":
                 await votedog(dog[1], 1)
                 await waitfor.send("Image upvoted!", hidden=True)
-            elif waitfor.custom_id == "downvote":
+            elif waitfor.custom_id == "downvotedog":
                 await votedog(dog[1], 0)
                 await waitfor.send("Image downvoted.", hidden=True)
     
@@ -140,7 +140,7 @@ class Fun(commands.Cog):
             async with aiohttp.ClientSession() as session:
                 async with session.get("https://some-random-api.ml/animal/birb") as response:
                     bird = await response.json()
-                    pic = bird[0]["image"]
+                    pic = bird["image"]
             return pic
         
         bird = await getbird()
