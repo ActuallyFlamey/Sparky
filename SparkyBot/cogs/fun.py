@@ -23,47 +23,27 @@ class Fun(commands.Cog):
                 async with session.get("https://api.thecatapi.com/v1/images/search") as response:
                     cat = await response.json()
                     pic = cat[0]["url"]
-                    catid = cat[0]["id"]
-            return [pic, catid]
-        
-        async def votecat(catid: str, vote: int):
-            async with aiohttp.ClientSession(headers={"x-api-key": self.api["thecatapi"]}) as session:
-                await session.post("https://api.thecatapi.com/v1/votes", data={
-                    "image_id": catid,
-                    "value": vote
-                })
+            return pic
         
         cat = await getcat()
 
         e = discord.Embed(title="Random Cat Picture", color=int(self.embed["color"], 16), description="Here's a picture of a cat straight from [TheCatAPI](https://thecatapi.com/)!")
         e.set_author(name=self.embed["author"] + "Fun", icon_url=self.embed["icon"])
-        e.set_image(url=cat[0])
+        e.set_image(url=cat)
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
         catmsg = await ctx.send(embed=e, components=[
             interactions.utils.manage_components.create_actionrow(
                 interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blurple, "Another!", None, "anothercat")
-            ),
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.green, "Upvote Image", None, "upvotecat"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "Downvote Image", None, "downvotecat")
             )
         ])
 
         while True:
             waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, catmsg, ["anothercat", "upvotecat", "downvotecat"])
-            if waitfor.custom_id == "anothercat":
-                if waitfor.author.id == ctx.author.id:
-                    cat = await getcat()
-                    waitfor.origin_message.embeds[0].image = cat[0]
-                    await waitfor.edit_origin(embed=e)
-                else:
-                    await waitfor.send("Only the original author can request another cat!", hidden=True)
-            elif waitfor.custom_id == "upvotecat":
-                await votecat(cat[1], 1)
-                await waitfor.send("Image upvoted!", hidden=True)
-            elif waitfor.custom_id == "downvotecat":
-                await votecat(cat[1], 0)
-                await waitfor.send("Image downvoted.", hidden=True)
+            if waitfor.author.id == ctx.author.id:
+                cat = await getcat()
+                await waitfor.edit_origin(embed=e)
+            else:
+                await waitfor.send("Only the original author can request another cat!", hidden=True)
     
     @commands.command(name="cat")
     async def dpycat(self, ctx: commands.Context):
@@ -82,47 +62,26 @@ class Fun(commands.Cog):
                 async with session.get("https://api.thedogapi.com/v1/images/search") as response:
                     dog = await response.json()
                     pic = dog[0]["url"]
-                    dogid = dog[0]["id"]
-            return [pic, dogid]
-        
-        async def votedog(dogid: str, vote: int):
-            async with aiohttp.ClientSession(headers={"x-api-key": self.api["thedogapi"]}) as session:
-                await session.post("https://api.thedogapi.com/v1/votes", data={
-                    "image_id": dogid,
-                    "value": vote
-                })
+            return pic
         
         dog = await getdog()
 
         e = discord.Embed(title="Random Dog Picture", color=int(self.embed["color"], 16), description="Here's a picture of a dog straight from [TheDogAPI](https://thedogapi.com/)!")
         e.set_author(name=self.embed["author"] + "Fun", icon_url=self.embed["icon"])
-        e.set_image(url=dog[0])
+        e.set_image(url=dog)
         e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
         dogmsg = await ctx.send(embed=e, components=[
             interactions.utils.manage_components.create_actionrow(
                 interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.blurple, "Another!", None, "anotherdog")
-            ),
-            interactions.utils.manage_components.create_actionrow(
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.green, "Upvote Image", None, "upvotedog"),
-                interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.red, "Downvote Image", None, "downvotedog")
             )
         ])
 
         while True:
             waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, dogmsg, ["anotherdog", "upvotedog", "downvotedog"])
-            if waitfor.custom_id == "anotherdog":
-                if waitfor.author.id == ctx.author.id:
-                    dog = await getdog()
-                    waitfor.origin_message.embeds[0].image = dog[0]
-                    await waitfor.edit_origin(embed=e)
-                else:
-                    await waitfor.send("Only the original author can request another dog!", hidden=True)
-            elif waitfor.custom_id == "upvotedog":
-                await votedog(dog[1], 1)
-                await waitfor.send("Image upvoted!", hidden=True)
-            elif waitfor.custom_id == "downvotedog":
-                await votedog(dog[1], 0)
-                await waitfor.send("Image downvoted.", hidden=True)
+            if waitfor.author.id == ctx.author.id:
+                await waitfor.edit_origin(embed=e)
+            else:
+                await waitfor.send("Only the original author can request another dog!", hidden=True)
     
     @commands.command(name="dog")
     async def dpydog(self, ctx: commands.Context):
@@ -151,7 +110,7 @@ class Fun(commands.Cog):
             sparkyfound = "**Congratulations! You found an Easter Egg! You found __Sparky__!**"
         
         e = discord.Embed(title="Random Bird Picture", color=int(self.embed["color"], 16), description="Here's a picture of a bird straight from [Some Random API](https://some-random-api.ml/)!")
-        e.set_author(name=self.embed["author"], icon_url=self.embed["icon"])
+        e.set_author(name=self.embed["author"] + "Fun", icon_url=self.embed["icon"])
         if sparkyfound is not None:
             e.description += f"\n\n{sparkyfound}"
         e.set_image(url=bird)
@@ -165,7 +124,6 @@ class Fun(commands.Cog):
         while True:
             waitfor: interactions.ComponentContext = await interactions.utils.manage_components.wait_for_component(self.bot, birdmsg, ["anotherbird"])
             if waitfor.author.id == ctx.author.id:
-                waitfor.origin_message.embeds[0].image = await getbird()
                 await waitfor.edit_origin(embed=e)
             else:
                 await waitfor.send("Only the original author can request another bird!", hidden=True)
