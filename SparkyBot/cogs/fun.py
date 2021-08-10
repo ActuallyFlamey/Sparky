@@ -12,6 +12,8 @@ class Fun(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        with open("./token.json") as tokenfile:
+            self.token = json.load(tokenfile)
         with open("./api.json") as apifile:
             self.api = json.load(apifile)
         with open("./Sparky/SparkyBot/misc/assets/embed.json") as embedfile:
@@ -303,6 +305,104 @@ class Fun(commands.Cog):
     @cog_ext.cog_subcommand(base="animals", name="panda", description="Fun - Shows a random panda image!")
     async def slashanimalspanda(self, ctx: interactions.SlashContext):
         await self.panda(ctx)
+    
+    @cog_ext.cog_subcommand(base="discord", subcommand_group="game", name="play", description="Fun - Play a Discord Game in a Voice Channel!", options=[
+        interactions.utils.manage_commands.create_option("game", "The Discord Game to play.", 3, True, choices=[
+            interactions.utils.manage_commands.create_choice("755827207812677713", "Poker Night"),
+            interactions.utils.manage_commands.create_choice("832012774040141894", "Chess in the Park"),
+            interactions.utils.manage_commands.create_choice("755600276941176913", "YouTube Together"),
+            interactions.utils.manage_commands.create_choice("773336526917861400", "Betrayal.io"),
+            interactions.utils.manage_commands.create_choice("814288819477020702", "Fishington.io")
+        ]),
+        interactions.utils.manage_commands.create_option("channel", "The Voice Channel to play in.", 7, False)
+    ])
+    async def slashdiscordgameplay(self, ctx: interactions.SlashContext, game: str, channel: discord.abc.GuildChannel=None):
+        async def playgame(channel: discord.VoiceChannel):
+            token = self.token["sparky"]
+
+            async with aiohttp.ClientSession(headers={"Authorization": f"Bot {token}"}) as session:
+                async with session.post(f"https://discord.com/api/v9/channels/{channel.id}/invites", data={"target_type": 2, "target_application_id": game}) as response:
+                    invite = await response.json()
+                    code = invite["code"]
+        
+            gamex = ""
+            if game == "755827207812677713":
+                gamex = "Poker Night"
+            elif game == "832012774040141894":
+                gamex = "Chess in the Park"
+            elif game == "755600276941176913":
+                gamex = "YouTube Together"
+            elif game == "773336526917861400":
+                gamex = "Betrayal.io"
+            elif game == "814288819477020702":
+                gamex = "Fishington.io"
+        
+            e = discord.Embed(title=f"Play {gamex}!", color=int(self.embed["color"], 16), description=f"Click the Button below to play {gamex} in the {channel.name} Voice Channel!")
+            e.set_author(name=self.embed["author"] + "Fun", icon_url=self.embed["icon"])
+            e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
+            await ctx.send(embed=e, components=[
+                interactions.utils.manage_components.create_actionrow(
+                    interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, f"Play {gamex}!", None, None, f"https://discord.gg/{code}")
+                )
+            ])
+        
+        if channel is None:
+            channel = ctx.author.voice.channel
+
+            if channel is None:
+                await ctx.send("Please join a Voice Channel or select one in the optional `channel` argument.", hidden=True)
+            else:
+                await playgame(channel)
+        else:
+            if channel.type == discord.ChannelType.voice:
+                await playgame(channel)
+            else:
+                await ctx.send("Channel must be of Voice type.", hidden=True)
+    
+    @cog_ext.cog_subcommand(base="discord", subcommand_group="game", name="info", description="Fun - Get info about Discord Games", options=[
+        interactions.utils.manage_commands.create_option("game", "The Discord Game to get information about.", 3, True, choices=[
+            interactions.utils.manage_commands.create_choice("Discord Games", "Discord Games (in general)"),
+            interactions.utils.manage_commands.create_choice("Poker Night", "Poker Night"),
+            interactions.utils.manage_commands.create_choice("Chess in the Park", "Chess in the Park"),
+            interactions.utils.manage_commands.create_choice("YouTube Together", "YouTube Together"),
+            interactions.utils.manage_commands.create_choice("Betrayal.io", "Betrayal.io"),
+            interactions.utils.manage_commands.create_choice("Fishington.io", "Fishington.io")
+        ])
+    ])
+    async def slashgameinfo(self, ctx: interactions.SlashContext, game: str):
+        if game != "Discord Games":
+            gameid = 0
+            if game == "Poker Night":
+                gameid = 755827207812677713
+            elif game == "Chess in the Park":
+                gameid = 832012774040141894
+            elif game == "YouTube Together":
+                gameid = 755600276941176913
+            elif game == "Betrayal.io":
+                gameid = 773336526917861400
+            elif game == "Fishington.io":
+                gameid = 814288819477020702
+        
+        gamedesc = ""
+        if game == "Discord Games":
+            gamedesc = "**Discord Games** are a **Beta** Discord feature, released **randomly** in some servers. There are six in total."
+        elif game == "Poker Night":
+            gamedesc = "Play poker with your friends in your favourite Discord server thanks to **Poker Night**. This was the first game released.\n**According to Discord themselves, *Poker Night* should only be played by people older than 18.**"
+        elif game == "Chess in the Park":
+            gamedesc = "Play a nice game of chess in a chill park with **Chess in the Park**. This game is the latest released."
+        elif game == "YouTube Together":
+            gamedesc = "Watch YouTube videos with all your friends thanks to **YouTube Together**!"
+        elif game == "Betrayal.io" or game == "Fishington.io":
+            gamedesc = "**Description coming soon(er or later).**"
+
+        e = discord.Embed(title=f"About {game}", color=int(self.embed["color"], 16))
+        e.set_author(name=self.embed["author"] + "Fun", icon_url=self.embed["icon"])
+        if game != "Discord Games":
+            e.add_field(name="Name", value=f"{game}")
+            e.add_field(name="ID", value=f"{gameid}")
+        e.add_field(name="Description", value=f"{gamedesc}")
+        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
+        await ctx.send(embed=e)
 
 def setup(bot: commands.Bot):
     bot.add_cog(Fun(bot))
