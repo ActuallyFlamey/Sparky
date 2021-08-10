@@ -313,10 +313,9 @@ class Fun(commands.Cog):
             interactions.utils.manage_commands.create_choice("755600276941176913", "YouTube Together"),
             interactions.utils.manage_commands.create_choice("773336526917861400", "Betrayal.io"),
             interactions.utils.manage_commands.create_choice("814288819477020702", "Fishington.io")
-        ]),
-        interactions.utils.manage_commands.create_option("channel", "The Voice Channel to play in.", 7, False)
+        ])
     ])
-    async def slashdiscordgameplay(self, ctx: interactions.SlashContext, game: str, channel: discord.abc.GuildChannel=None):
+    async def slashdiscordgameplay(self, ctx: interactions.SlashContext, game: str):
         async def playgame(channel: discord.VoiceChannel):
             token = self.token["sparky"]
 
@@ -343,18 +342,12 @@ class Fun(commands.Cog):
                 )
             ])
         
-        if channel is None:
-            channel = ctx.author.voice.channel
+        channel = ctx.author.voice.channel
 
-            if channel is None:
-                await ctx.send("Please join a Voice Channel or select one in the optional `channel` argument.", hidden=True)
-            else:
-                await playgame(channel)
+        if channel is None:
+            await ctx.send("Please join a Voice Channel and run the command again.", hidden=True)
         else:
-            if channel.type == discord.ChannelType.voice:
-                await playgame(channel)
-            else:
-                await ctx.send("Channel must be of Voice type.", hidden=True)
+            await playgame(channel)
     
     @cog_ext.cog_subcommand(base="discord", subcommand_group="game", name="info", description="Fun - Get info about Discord Games", options=[
         interactions.utils.manage_commands.create_option("game", "The Discord Game to get information about.", 3, True, choices=[
