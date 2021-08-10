@@ -320,10 +320,7 @@ class Fun(commands.Cog):
         async def playgame(channel: discord.VoiceChannel):
             token = self.token["sparky"]
 
-            async with aiohttp.ClientSession(headers={"Authorization": f"Bot {token}"}) as session:
-                async with session.post(f"https://discord.com/api/v9/channels/{channel.id}/invites", data={"target_type": 2, "target_application_id": game}) as response:
-                    invite = await response.json()
-                    code = invite["code"]
+            invite = await channel.create_invite(target_type=discord.InviteTarget.embedded_application, target_application_id=int(game), reason="Play Discord Game Command.")
         
             gamex = ""
             if game == "755827207812677713":
@@ -342,7 +339,7 @@ class Fun(commands.Cog):
             e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
             await ctx.send(embed=e, components=[
                 interactions.utils.manage_components.create_actionrow(
-                    interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, f"Play {gamex}!", None, None, f"https://discord.gg/{code}")
+                    interactions.utils.manage_components.create_button(interactions.utils.manage_components.ButtonStyle.URL, f"Play {gamex}!", None, None, invite.url)
                 )
             ])
         
