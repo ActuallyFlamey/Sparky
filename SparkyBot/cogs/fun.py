@@ -317,8 +317,6 @@ class Fun(commands.Cog):
     ])
     async def slashdiscordgameplay(self, ctx: interactions.SlashContext, game: str):
         async def playgame(channel: discord.VoiceChannel):
-            token = self.token["sparky"]
-
             invite = await channel.create_invite(target_type=discord.InviteTarget.embedded_application, target_application_id=int(game), reason="Play Discord Game Command.")
         
             gamex = ""
@@ -342,12 +340,12 @@ class Fun(commands.Cog):
                 )
             ])
         
-        channel = ctx.author.voice.channel
+        voicestatus = ctx.author.voice
 
-        if channel is None:
+        if voicestatus is None:
             await ctx.send("Please join a Voice Channel and run the command again.", hidden=True)
         else:
-            await playgame(channel)
+            await playgame(voicestatus.channel)
     
     @cog_ext.cog_subcommand(base="discord", subcommand_group="game", name="info", description="Fun - Get info about Discord Games", options=[
         interactions.utils.manage_commands.create_option("game", "The Discord Game to get information about.", 3, True, choices=[
