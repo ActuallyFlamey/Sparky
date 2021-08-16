@@ -1,8 +1,7 @@
 import discord
 import json
-import discord_slash as interactions
+import dinteractions_Paginator as paginator
 from discord.ext import commands
-from discord_slash import cog_ext
 
 class HelpCommand(commands.MinimalHelpCommand):
     def __init__(self):
@@ -27,14 +26,18 @@ class HelpCommand(commands.MinimalHelpCommand):
         embed.set_thumbnail(url="https://this.is-for.me/i/gxe1.png")
         bot = self.context.bot
         filtered = await self.filter_commands(bot.commands, sort=True)
+        embeds = [embed]
         for cog, cog_commands in mapping.items():
             filtered = await self.filter_commands(cog_commands)
             if filtered:
-                embed.add_field(name=f"{cog.qualified_name}", value=cog.description or 'No description', inline=False)
+                e = discord.Embed(title=f"{cog.qualified_name}", color=int(self.embed["color"], 16), description=cog.description or 'No description')
+                e.set_author(name=self.embed["author"] + "Help", icon_url=self.embed["icon"])
                 for command in filtered:
-                    embed.add_field(name=f"`{self.get_command_signature(command)}`", value=f"{command.description}\n\n{command.short_doc}", inline=False)
+                    e.add_field(name=f"`{self.get_command_signature(command)}`", value=f"{command.description}\n\n{command.short_doc}", inline=False)
+                e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
+                embeds.append(e)
         embed.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
-        await ctx.send(embed=embed)
+        await paginator.Paginator(self.bot, ctx, embeds)
 
     async def send_command_help(self, command):
         embed = discord.Embed(title=f"{self.get_command_signature(command)} (from {command.cog_name})", description=command.help or 'No description', color=int(self.embed["color"], 16))

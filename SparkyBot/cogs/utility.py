@@ -2,6 +2,7 @@ import discord
 import json
 import typing
 import discord_slash as interactions
+import aiohttp
 from datetime import datetime
 from discord_slash import cog_ext
 from discord.ext import commands
@@ -57,6 +58,23 @@ class Utility(commands.Cog):
     @cog_ext.cog_slash(name="uptime", description="Utility - Shows Sparky's Uptime.")
     async def slashuptime(self, ctx: interactions.SlashContext):
         await self.uptime(ctx)
+    
+    @cog_ext.cog_context_menu(name="Translate", target=3)
+    async def translate(self, ctx: interactions.MenuContext):
+        async with aiohttp.ClientSession() as session:
+            async with session.post("https://translation.googleapis.com/language/translate/v2/detect", data={"q": ctx.target_message.clean_content}) as response:
+                language = await response.json()
+                language: str = language["data"]["detections"][0][0]["language"]
+            async with session.post("https://translation.googleapis.com/language/translate/v2", data={"q": ctx.target_message.clean_content, "target": "en"}) as response:
+                translation = await response.json()
+                translation: str = translation["data"]["translations"][0]["translatedText"]
+        
+        e = discord.Embed(title="Translation", color=int(self.embed["color"], 16), description=f"Here is what the message means.\nTranslated from **{language.upper()}** to **EN**.")
+        e.set_author(name=self.embed["author"] + "Utility", icon_url=self.embed["icon"])
+        e.add_field(name="Original Message", value=ctx.target_message.clean_content, inline=False)
+        e.add_field(name="Translated Message", value=translation, inline=False)
+        e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
+        await ctx.send(embed=e)
 
 def setup(bot: commands.Bot):
     bot.add_cog(Utility(bot))
