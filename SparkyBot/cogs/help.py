@@ -37,7 +37,7 @@ class HelpCommand(commands.MinimalHelpCommand):
                 e.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
                 embeds.append(e)
         embed.set_footer(text=self.embed["footer"], icon_url=self.embed["icon"])
-        await paginator.Paginator(self.bot, ctx, embeds)
+        await paginator.Paginator(bot, ctx, embeds)
 
     async def send_command_help(self, command):
         embed = discord.Embed(title=f"{self.get_command_signature(command)} (from {command.cog_name})", description=command.help or 'No description', color=int(self.embed["color"], 16))
