@@ -61,8 +61,8 @@ class Utility(commands.Cog):
     
     @cog_ext.cog_context_menu(name="Translate", target=3)
     async def translate(self, ctx: interactions.MenuContext):
-        translator = google.cloud.translate_v2.Client()
-        result = translator.translate(ctx.target_message.clean_content, "en")
+        translator = google.cloud.translate_v3.Client()
+        result = await translator.translate_text(ctx.target_message.clean_content, "en")
         
         translation = result["translatedText"]
         language = result["detectedSourceLanguage"]
