@@ -2,7 +2,7 @@ import discord
 import json
 import typing
 import discord_slash as interactions
-import google
+import aiohttp
 from datetime import datetime
 from discord_slash import cog_ext
 from discord.ext import commands
@@ -61,13 +61,14 @@ class Utility(commands.Cog):
     
     @cog_ext.cog_context_menu(name="Translate", target=3)
     async def translate(self, ctx: interactions.MenuContext):
-        translator = google.cloud.translate_v3.Client()
-        result = await translator.translate_text(ctx.target_message.clean_content, "en")
+        async with aiohttp.ClientSession() as session:
+            async with session.post("https://api.unbabel.com/tapi/v2/translation") as response:
+                response = await response.json()
+
+        translation = response["text"]
+        language = response["source_language"]
         
-        translation = result["translatedText"]
-        language = result["detectedSourceLanguage"]
-        
-        e = discord.Embed(title="Translation", color=int(self.embed["color"], 16), description=f"Here is what the message means.\nTranslated from **{language.upper()}** to **EN**.")
+        e = discord.Embed(title="Translation", color=int(self.embed["color"], 16), description=f"Here is what the message means.\nTranslated from **{language.upper()}** to **EN** by [Unbabel Translation API](https://developers.unbabel.com/docs/translation/).")
         e.set_author(name=self.embed["author"] + "Utility", icon_url=self.embed["icon"])
         e.add_field(name="Original Message", value=ctx.target_message.clean_content, inline=False)
         e.add_field(name="Translated Message", value=translation, inline=False)
