@@ -62,7 +62,7 @@ class Utility(commands.Cog):
     @cog_ext.cog_context_menu(name="Translate", target=3)
     async def translate(self, ctx: interactions.MenuContext):
         async with aiohttp.ClientSession() as session:
-            async with session.post("https://api.unbabel.com/tapi/v2/translation") as response:
+            async with session.post("https://api.unbabel.com/tapi/v2/translation", data={"text": ctx.target_message.clean_content, "target_language": "en"}) as response:
                 response = await response.json()
 
         translation = response["text"]
