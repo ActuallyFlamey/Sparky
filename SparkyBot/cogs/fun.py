@@ -306,6 +306,12 @@ class Fun(commands.Cog):
     async def slashanimalspanda(self, ctx: interactions.SlashContext):
         await self.panda(ctx)
     
+    @commands.command(name="discord")
+    async def dpydiscord(self, ctx: commands.Context):
+        """To avoid confusion, please use the Slash Command version at `/discord <subcommand> [sub-subcommand]`"""
+
+        await ctx.send("To avoid confusion, please use the Slash Command version at `/discord <subcommand> [sub-subcommand]`")
+    
     @cog_ext.cog_subcommand(base="discord", subcommand_group="game", name="play", description="Fun - Play a Discord Game in a Voice Channel!", options=[
         interactions.utils.manage_commands.create_option("game", "The Discord Game to play.", 3, True, choices=[
             interactions.utils.manage_commands.create_choice("755827207812677713", "Poker Night"),

@@ -22,7 +22,7 @@ async def on_ready():
 @bot.event
 async def on_command_error(ctx: commands.Context, error):
     e = discord.Embed(title="An Error Occurred", color=int(embed["color"], 16), description=f"{error}")
-    e.set_author(name=embed["author"], icon_url=embed["icon"])
+    e.set_author(name=embed["author"] + "Main", icon_url=embed["icon"])
     e.set_footer(text=embed["footer"], icon_url=embed["icon"])
     await ctx.send(embed=e)
 
@@ -31,7 +31,7 @@ async def on_command_error(ctx: commands.Context, error):
 @bot.event
 async def on_slash_command_error(ctx: interactions.SlashContext, ex):
     e = discord.Embed(title="An Error Occurred", color=int(embed["color"], 16), description=f"{ex}")
-    e.set_author(name=embed["author"], icon_url=embed["icon"])
+    e.set_author(name=embed["author"] + "Main", icon_url=embed["icon"])
     e.set_footer(text=embed["footer"], icon_url=embed["icon"])
     await ctx.send(embed=e)
 
