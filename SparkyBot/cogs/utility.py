@@ -64,7 +64,7 @@ class Utility(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.post("https://libretranslate.com/detect", data={"q": ctx.target_message.clean_content}) as response1:
                 language = await response1.json()
-                language = language["language"]
+                language = language[0]["language"]
                 async with session.post("https://libretranslate.com/translate", data={"q": ctx.target_message.clean_content, "source": language, "target": "en"}) as response2:
                     translation = await response2.json()
                     translation = translation["translatedText"]
