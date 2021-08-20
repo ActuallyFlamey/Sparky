@@ -64,10 +64,10 @@ class Utility(commands.Cog):
         async with aiohttp.ClientSession(headers={"Content-Type": "application/json"}) as session:
             async with session.post("https://libretranslate.com/detect", data={"q": ctx.target_message.clean_content}) as response1:
                 language = await response1.json()
-                language = language["detections"][0]["language"]
+                language = language[0][0]["language"]
                 async with session.post("https://libretranslate.com/translate", data={"q": ctx.target_message.clean_content, "source": language, "target": "en"}) as response2:
                     translation = await response2.json()
-                    translation = translation["translate"]["translatedText"]
+                    translation = translation[0]["translatedText"]
         
         e = discord.Embed(title="Translation", color=int(self.embed["color"], 16), description=f"Here is what the message means.\nTranslated from **{language.upper()}** to **EN** by [LibreTranslate API](https://libretranslate.com/docs/).")
         e.set_author(name=self.embed["author"] + "Utility", icon_url=self.embed["icon"])
