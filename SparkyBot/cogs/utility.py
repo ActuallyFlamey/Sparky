@@ -62,7 +62,7 @@ class Utility(commands.Cog):
     @cog_ext.cog_context_menu(name="Translate", target=3)
     async def translate(self, ctx: interactions.MenuContext):
         async with aiohttp.ClientSession(headers={"Content-Type": "application/json"}) as session:
-            async with session.post("https://libretranslate.com/detect", data={"q": ctx.target_message.clean_content}) as response1:
+            async with session.post("https://libretranslate.com/detect", json={"q": ctx.target_message.clean_content}) as response1:
                 language = await response1.json()
                 language = language[0][0]["language"]
                 async with session.post("https://libretranslate.com/translate", data={"q": ctx.target_message.clean_content, "source": language, "target": "en"}) as response2:
