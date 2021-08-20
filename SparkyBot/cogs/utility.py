@@ -62,13 +62,14 @@ class Utility(commands.Cog):
     @cog_ext.cog_context_menu(name="Translate", target=3)
     async def translate(self, ctx: interactions.MenuContext):
         async with aiohttp.ClientSession() as session:
-            async with session.post("https://api.unbabel.com/tapi/v2/translation", data={"text": ctx.target_message.clean_content, "target_language": "en"}) as response:
-                response = await response.json()
-
-        translation = response["text"]
-        language = response["source_language"]
+            async with session.post("https://libretranslate.com/detect", data={"q": ctx.target_message.clean_content}) as response1:
+                language = await response1.json()
+                language = language["language"]
+                async with session.post("https://libretranslate.com/translate", data={"q": ctx.target_message.clean_content, "source": language, "target": "en"}) as response2:
+                    translation = await response2.json()
+                    translation = translation["translatedText"]
         
-        e = discord.Embed(title="Translation", color=int(self.embed["color"], 16), description=f"Here is what the message means.\nTranslated from **{language.upper()}** to **EN** by [Unbabel Translation API](https://developers.unbabel.com/docs/translation/).")
+        e = discord.Embed(title="Translation", color=int(self.embed["color"], 16), description=f"Here is what the message means.\nTranslated from **{language.upper()}** to **EN** by [LibreTranslate API](https://libretranslate.com/docs/).")
         e.set_author(name=self.embed["author"] + "Utility", icon_url=self.embed["icon"])
         e.add_field(name="Original Message", value=ctx.target_message.clean_content, inline=False)
         e.add_field(name="Translated Message", value=translation, inline=False)
